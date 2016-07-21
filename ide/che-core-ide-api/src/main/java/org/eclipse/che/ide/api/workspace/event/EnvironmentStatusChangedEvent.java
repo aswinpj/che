@@ -17,7 +17,7 @@ import org.eclipse.che.api.machine.shared.dto.event.MachineStatusEvent;
 import org.eclipse.che.api.machine.shared.dto.event.MachineStatusEvent.EventType;
 
 /**
- * //
+ * Event informing about changing of environments status.
  *
  * @author Vitalii Parfonov
  */
@@ -30,7 +30,16 @@ public class EnvironmentStatusChangedEvent extends GwtEvent<EnvironmentStatusCha
     private final String                       machineName;
     private final String                       workspaceId;
 
+    /**
+     * Implement this handler to handle the event.
+     */
     public interface Handler extends EventHandler {
+        /**
+         * Performs some actions when environments status has been changed.
+         *
+         * @param event
+         *         contains information about environments status
+         */
         void onEnvironmentStatusChanged(EnvironmentStatusChangedEvent event);
     }
 

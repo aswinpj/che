@@ -31,6 +31,8 @@ import org.eclipse.che.ide.api.workspace.WorkspaceServiceClient;
 import org.eclipse.che.ide.context.AppContextImpl;
 import org.eclipse.che.ide.dto.DtoFactory;
 
+import static org.eclipse.che.ide.extension.machine.client.machine.MachineStateEvent.MachineAction.DESTROYED;
+
 /**
  * Manager for machine operations.
  *
@@ -147,7 +149,7 @@ public class MachineManagerImpl implements MachineManager {
         return machineServiceClient.destroyMachine(machineState.getId()).then(new Operation<Void>() {
             @Override
             public void apply(Void arg) throws OperationException {
-                eventBus.fireEvent(new MachineStateEvent(machineState, MachineStateEvent.MachineAction.DESTROYED));
+                eventBus.fireEvent(new MachineStateEvent(machineState, DESTROYED));
 
                 final DevMachine devMachine = appContext.getDevMachine();
                 if (devMachine != null && machineState.getId().equals(devMachine.getId()) && appContext instanceof AppContextImpl) {

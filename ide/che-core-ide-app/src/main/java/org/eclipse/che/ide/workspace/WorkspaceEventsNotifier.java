@@ -68,8 +68,13 @@ import static org.eclipse.che.ide.ui.loaders.initialization.OperationInfo.Status
 import static org.eclipse.che.ide.ui.loaders.initialization.OperationInfo.Status.IN_PROGRESS;
 
 /**
- * Notifies about changing workspace state.
+ * <ul> Notifies about the events which occur in the workspace:
+ * <li> changing of the workspace status ({@link WorkspaceStartingEvent}, {@link WorkspaceStartedEvent}, {@link
+ * WorkspaceStoppedEvent});</li>
+ * <li> changing of environments status ({@link EnvironmentStatusChangedEvent});</li>
+ * <li> receiving Environment Output message from server ({@link EnvironmentOutputEvent});</li>
  *
+ * @author Vitalii Parfonov
  * @author Roman Nikitenko
  */
 @Singleton
@@ -134,7 +139,15 @@ public class WorkspaceEventsNotifier {
 
     }
 
-    public void trackWorkspaceEvents(final WorkspaceDto workspace, final Callback<Component, Exception> callback) {
+    /**
+     * Start tracking workspace events and notify about changing.
+     *
+     * @param workspace
+     *         workspace to track
+     * @param callback
+     *         callback which is necessary to notify that workspace component started or failed
+     */
+    void trackWorkspaceEvents(final WorkspaceDto workspace, final Callback<Component, Exception> callback) {
         this.callback = callback;
         this.workspaceComponent = wsComponentProvider.get();
         this.messageBus = messageBusProvider.getMessageBus();
