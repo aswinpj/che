@@ -212,7 +212,7 @@ public class CreateWorkspacePresenter implements CreateWorkspaceView.ActionDeleg
             @Override
             public void apply(WorkspaceDto workspace) throws OperationException {
                 DefaultWorkspaceComponent component = wsComponentProvider.get();
-                component.startWorkspaceById(workspace, callback);
+                component.startWorkspace(workspace, callback);
             }
         }).catchError(new Operation<PromiseError>() {
             @Override

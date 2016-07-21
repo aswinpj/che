@@ -18,23 +18,24 @@ import java.util.Objects;
  * @author Alexander Garagatyi
  */
 public class MachineLogMessageImpl implements MachineLogMessage {
-    private String machine;
+    private String machineName;
     private String content;
 
-    public MachineLogMessageImpl() {}
+    public MachineLogMessageImpl() {
+    }
 
-    public MachineLogMessageImpl(String machine, String content) {
-        this.machine = machine;
+    public MachineLogMessageImpl(String machineName, String content) {
+        this.machineName = machineName;
         this.content = content;
     }
 
     @Override
     public String getMachineName() {
-        return machine;
+        return machineName;
     }
 
     public void setMachine(String machine) {
-        this.machine = machine;
+        this.machineName = machine;
     }
 
 
@@ -52,18 +53,18 @@ public class MachineLogMessageImpl implements MachineLogMessage {
         if (this == o) return true;
         if (!(o instanceof MachineLogMessageImpl)) return false;
         MachineLogMessageImpl that = (MachineLogMessageImpl)o;
-        return Objects.equals(machine, that.machine) &&
+        return Objects.equals(machineName, that.machineName) &&
                Objects.equals(content, that.content);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(machine, content);
+        return Objects.hash(machineName, content);
     }
 
     @Override
     public String toString() {
-        return "MachineLogMessageImpl{machine='" + machine +
+        return "MachineLogMessageImpl{machineName='" + machineName +
                "', content='" + content + "'}";
     }
 }
