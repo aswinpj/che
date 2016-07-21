@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.che.ide.extension.machine.client.processes;
 
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Widget;
 import elemental.dom.Element;
 import elemental.dom.Node;
 import elemental.events.Event;

@@ -11,9 +11,6 @@
 package org.eclipse.che.ide.extension.machine.client.processes.monitoring;
 
 import com.google.inject.Singleton;
-import elemental.dom.Element;
-import org.eclipse.che.ide.ui.Tooltip;
-import org.eclipse.che.ide.ui.menu.PositionController;
 
 import java.util.HashMap;
 import java.util.Map;
