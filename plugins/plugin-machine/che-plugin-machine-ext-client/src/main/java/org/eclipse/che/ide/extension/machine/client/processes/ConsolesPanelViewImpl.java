@@ -269,13 +269,15 @@ public class ConsolesPanelViewImpl extends Composite implements ConsolesPanelVie
         processTreeNodes.remove(node.getId());
     }
 
+    private ProcessTreeNode root;
+
     @Override
     public void setProcessesData(@NotNull ProcessTreeNode root) {
         splitLayoutPanel.setWidgetHidden(navigationPanel, false);
 
         processTree.asWidget().setVisible(true);
         processTree.getModel().setRoot(root);
-        processTree.renderTree(-1);
+        processTree.renderTree();
 
         for (ProcessTreeNode processTreeNode : processTreeNodes.values()) {
             if (!processTreeNode.getId().equals(activeProcessId) && processTreeNode.hasUnreadContent()) {
