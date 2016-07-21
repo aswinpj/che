@@ -87,9 +87,11 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
@@ -365,25 +367,26 @@ public class FactoryServiceTest {
     // FactoryService#updateFactory(String factoryId, FactoryDto update) tests:
 
 
-//    @Test
-//    public void shouldBeAbleToUpdateFactory() throws Exception {
-//        final Factory existed = createFactory();
-//        final Factory update = createFactoryWithStorage("git", "http://github.com/codenvy/platform-api1.git");
-//        when(factoryManager.getById(FACTORY_ID)).thenReturn(existed);
-//
-//        final Response response = given().auth()
-//                                         .basic(ADMIN_USER_NAME, ADMIN_USER_PASSWORD)
-//                                         .contentType(APPLICATION_JSON)
-//                                         .body(JsonHelper.toJson(asDto(update)))
-//                                         .when()
-//                                         .expect()
-//                                         .statusCode(200)
-//                                         .put("/private" + SERVICE_PATH + "/" + FACTORY_ID);
-//
-//        final FactoryDto responseFactory = getFromResponse(response, FactoryDto.class);
-//        assertNotEquals(responseFactory.withLinks(emptyList()), asDto(existed));
-//        verify(factoryManager).updateFactory(eq(update), any());
-//    }
+    @Test
+    public void shouldBeAbleToUpdateFactory() throws Exception {
+        final Factory existed = createFactory();
+        final Factory update = createFactoryWithStorage("git", "http://github.com/codenvy/platform-api1.git");
+        when(factoryManager.getById(FACTORY_ID)).thenReturn(existed);
+        when(factoryManager.updateFactory(any())).thenReturn(update);
+
+        final Response response = given().auth()
+                                         .basic(ADMIN_USER_NAME, ADMIN_USER_PASSWORD)
+                                         .contentType(APPLICATION_JSON)
+                                         .body(JsonHelper.toJson(asDto(existed, user)))
+                                         .when()
+                                         .expect()
+                                         .statusCode(200)
+                                         .put("/private" + SERVICE_PATH + "/" + FACTORY_ID);
+
+        final FactoryDto result = getFromResponse(response, FactoryDto.class);
+        verify(factoryManager, times(1)).updateFactory(any());
+        assertEquals(result.withLinks(emptyList()), asDto(update, user));
+    }
 
 //
 //    /**
@@ -1404,7 +1407,7 @@ public class FactoryServiceTest {
                           .setId(FACTORY_ID)
                           .setVersion("4.0")
                           .setWorkspace(createWorkspaceConfig(type, location))
-                          .setCreator(new AuthorImpl(12L, USER_ID))
+                          .setCreator(new AuthorImpl(USER_ID, 12L))
                           .build();
     }
 
