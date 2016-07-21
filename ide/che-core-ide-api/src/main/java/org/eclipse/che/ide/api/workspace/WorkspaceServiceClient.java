@@ -116,10 +116,13 @@ public interface WorkspaceServiceClient {
      *         workspace ID
      * @param envName
      *         the name of the workspace environment that should be used for start
+     * @param ignoreAutoRestore
+     *         if <code>true</code> workspace will not be restored from snapshot,
+     *         even if auto-restore is enabled
      * @return a promise that resolves to the {@link WorkspaceDto}, or rejects with an error
      * @see WorkspaceService#startById(String, String, Boolean, String)
      */
-    Promise<WorkspaceDto> startById(String id, String envName);
+    Promise<WorkspaceDto> startById(String id, String envName, boolean ignoreAutoRestore);
 
     /**
      * Stops running workspace.

@@ -352,6 +352,9 @@ public class WorkspaceManager {
      * @param accountId
      *         account which should be used for this runtime workspace or null when
      *         it should be automatically detected
+     * @param ignoreAutoRestore
+     *         if <code>true</code> workspace will not be restored from snapshot,
+     *         even if auto-restore is enabled
      * @return starting workspace
      * @throws NullPointerException
      *         when {@code workspaceId} is null
@@ -363,7 +366,8 @@ public class WorkspaceManager {
      */
     public WorkspaceImpl startWorkspace(String workspaceId,
                                         @Nullable String envName,
-                                        @Nullable String accountId) throws NotFoundException,
+                                        @Nullable String accountId,
+                                        boolean ignoreAutoRestore) throws NotFoundException,
                                                                            ServerException,
                                                                            ConflictException {
         requireNonNull(workspaceId, "Required non-null workspace id");
@@ -371,7 +375,7 @@ public class WorkspaceManager {
         final String restoreAttr = workspace.getAttributes().get(AUTO_RESTORE_FROM_SNAPSHOT);
         final boolean autoRestore = restoreAttr == null ? defaultAutoRestore : parseBoolean(restoreAttr);
         final boolean snapshotExists = !getSnapshot(workspaceId).isEmpty();
-        return performAsyncStart(workspace, envName, snapshotExists && autoRestore, accountId);
+        return performAsyncStart(workspace, envName, !ignoreAutoRestore && snapshotExists && autoRestore, accountId);
     }
 
     /**

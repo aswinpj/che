@@ -189,21 +189,22 @@ public class WorkspaceServiceClientImpl implements WorkspaceServiceClient {
     }
 
     @Override
-    public Promise<WorkspaceDto> startById(@NotNull final String id, final String envName) {
+    public Promise<WorkspaceDto> startById(@NotNull final String id, final String envName, final boolean ignoreAutoRestore) {
         return newPromise(new RequestCall<WorkspaceDto>() {
             @Override
             public void makeCall(AsyncCallback<WorkspaceDto> callback) {
-                startById(id, envName, callback);
+                startById(id, envName, ignoreAutoRestore, callback);
             }
         });
     }
 
     private void startById(@NotNull String workspaceId,
                            @Nullable String envName,
+                           @Nullable boolean ignoreAutoRestore,
                            @NotNull AsyncCallback<WorkspaceDto> callback) {
-        String url = baseHttpUrl + "/" + workspaceId + "/runtime";
+        String url = baseHttpUrl + "/" + workspaceId + "/runtime?ignoreAutoRestore=" + ignoreAutoRestore;
         if (envName != null) {
-            url += "?environment=" + envName;
+            url += "&environment=" + envName;
         }
         asyncRequestFactory.createPostRequest(url, null)
                            .header(ACCEPT, APPLICATION_JSON)

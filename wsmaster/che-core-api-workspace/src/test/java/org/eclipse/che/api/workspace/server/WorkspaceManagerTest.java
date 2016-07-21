@@ -335,7 +335,8 @@ public class WorkspaceManagerTest {
 
         workspaceManager.startWorkspace(workspace.getId(),
                                         workspace.getConfig().getDefaultEnv(),
-                                        "account");
+                                        "account",
+                                        false);
 
         verify(runtimes, timeout(2000)).start(workspace, workspace.getConfig().getDefaultEnv(), false);
         verify(workspaceHooks, timeout(2000)).beforeStart(workspace, workspace.getConfig().getDefaultEnv(), "account");
@@ -352,7 +353,8 @@ public class WorkspaceManagerTest {
 
         workspaceManager.startWorkspace(workspace.getId(),
                                         workspace.getConfig().getDefaultEnv(),
-                                        "account");
+                                        "account",
+                                        false);
 
         verify(runtimes, timeout(2000)).start(workspace, workspace.getConfig().getDefaultEnv(), true);
         verify(workspaceHooks, timeout(2000)).beforeStart(workspace, workspace.getConfig().getDefaultEnv(), "account");
@@ -368,7 +370,26 @@ public class WorkspaceManagerTest {
 
         workspaceManager.startWorkspace(workspace.getId(),
                                         workspace.getConfig().getDefaultEnv(),
-                                        "account");
+                                        "account",
+                                        false);
+
+        verify(runtimes, timeout(2000)).start(workspace, workspace.getConfig().getDefaultEnv(), false);
+        verify(workspaceHooks, timeout(2000)).beforeStart(workspace, workspace.getConfig().getDefaultEnv(), "account");
+        assertNotNull(workspace.getAttributes().get(UPDATED_ATTRIBUTE_NAME));
+    }
+
+    @Test
+    public void shouldNotRecoverWorkspaceWhenAutoRestoreAttributesIsSetAndSnapshotExistButIgnoreAutoRestore() throws Exception {
+        final WorkspaceImpl workspace = workspaceManager.createWorkspace(createConfig(), "user123", "account");
+        workspace.getAttributes().put(AUTO_RESTORE_FROM_SNAPSHOT, "true");
+        when(machineManager.getSnapshots(any(), any())).thenReturn(singletonList(mock(SnapshotImpl.class)));
+        when(workspaceDao.get(workspace.getId())).thenReturn(workspace);
+        when(runtimes.get(any())).thenThrow(new NotFoundException(""));
+
+        workspaceManager.startWorkspace(workspace.getId(),
+                                        workspace.getConfig().getDefaultEnv(),
+                                        "account",
+                                        true);
 
         verify(runtimes, timeout(2000)).start(workspace, workspace.getConfig().getDefaultEnv(), false);
         verify(workspaceHooks, timeout(2000)).beforeStart(workspace, workspace.getConfig().getDefaultEnv(), "account");
@@ -383,7 +404,7 @@ public class WorkspaceManagerTest {
         final RuntimeDescriptor descriptor = createDescriptor(workspace, STARTING);
         when(runtimes.get(workspace.getId())).thenReturn(descriptor);
 
-        workspaceManager.startWorkspace(workspace.getId(), null, null);
+        workspaceManager.startWorkspace(workspace.getId(), null, null, false);
     }
 
     @Test
@@ -394,7 +415,7 @@ public class WorkspaceManagerTest {
         final RuntimeDescriptor descriptor = createDescriptor(workspace, STARTING);
         when(runtimes.start(any(), anyString(), anyBoolean())).thenReturn(descriptor);
 
-        workspaceManager.startWorkspace(workspace.getId(), null, "account");
+        workspaceManager.startWorkspace(workspace.getId(), null, "account", false);
 
         // timeout is needed because this invocation will run in separate thread asynchronously
         verify(runtimes, timeout(2000)).start(workspace, workspace.getConfig().getDefaultEnv(), false);
@@ -413,7 +434,7 @@ public class WorkspaceManagerTest {
         final RuntimeDescriptor descriptor = createDescriptor(workspace, STARTING);
         when(runtimes.start(any(), anyString(), anyBoolean())).thenReturn(descriptor);
 
-        workspaceManager.startWorkspace(workspace.getId(), nonDefaultEnv.getName(), "account");
+        workspaceManager.startWorkspace(workspace.getId(), nonDefaultEnv.getName(), "account", false);
 
         // timeout is needed because this invocation will run in separate thread asynchronously
         verify(runtimes, timeout(2000)).start(workspace, nonDefaultEnv.getName(), false);
@@ -428,7 +449,7 @@ public class WorkspaceManagerTest {
         final RuntimeDescriptor descriptor = createDescriptor(workspace, STARTING);
         when(runtimes.start(any(), anyString(), anyBoolean())).thenReturn(descriptor);
 
-        workspaceManager.startWorkspace(workspace.getId(), "fake", "account");
+        workspaceManager.startWorkspace(workspace.getId(), "fake", "account", false);
     }
 
     @Test
@@ -545,7 +566,7 @@ public class WorkspaceManagerTest {
         when(runtimes.get(any())).thenThrow(new NotFoundException(""));
         when(runtimes.start(any(), anyString(), anyBoolean())).thenThrow(new ConflictException(""));
 
-        workspaceManager.startWorkspace(workspace.getId(), null, null);
+        workspaceManager.startWorkspace(workspace.getId(), null, null, false);
 
         verify(workspaceDao, timeout(2000)).remove(workspace.getId());
     }
@@ -594,7 +615,7 @@ public class WorkspaceManagerTest {
         when(workspaceDao.get(workspace.getId())).thenReturn(workspace);
         when(runtimes.get(any())).thenThrow(new NotFoundException(""));
 
-        workspaceManager.startWorkspace(workspace.getId(), workspace.getConfig().getDefaultEnv(), "account");
+        workspaceManager.startWorkspace(workspace.getId(), workspace.getConfig().getDefaultEnv(), "account", false);
 
         verify(runtimes, timeout(2000)).start(workspace, workspace.getConfig().getDefaultEnv(), true);
     }

@@ -140,7 +140,7 @@ public class WorkspaceService extends Service {
                                                                          attributes,
                                                                          accountId);
         if (startAfterCreate) {
-            workspaceManager.startWorkspace(workspace.getId(), null, accountId);
+            workspaceManager.startWorkspace(workspace.getId(), null, accountId, false);
         }
         return Response.status(201)
                        .entity(linksInjector.injectLinks(asDto(workspace), getServiceContext()))
@@ -264,16 +264,16 @@ public class WorkspaceService extends Service {
                                   String envName,
                                   @ApiParam("The account id related to this operation")
                                   @QueryParam("accountId")
-                                  String accountId) throws ServerException,
+                                  String accountId,
+                                  @ApiParam("Do not restore from snapshot even if auto-restore is enabled (false by default)")
+                                  @QueryParam("ignoreAutoRestore")
+                                  boolean ignoreAutoRestore) throws ServerException,
                                                            BadRequestException,
                                                            NotFoundException,
                                                            ForbiddenException,
                                                            ConflictException {
-        final Map<String, String> params = Maps.newHashMapWithExpectedSize(2);
-        params.put("accountId", accountId);
-        params.put("workspaceId", workspaceId);
-
-        return linksInjector.injectLinks(asDto(workspaceManager.startWorkspace(workspaceId, envName, accountId)), getServiceContext());
+        return linksInjector.injectLinks(asDto(workspaceManager.startWorkspace(workspaceId, envName, accountId, ignoreAutoRestore)),
+                                         getServiceContext());
     }
 
     @POST

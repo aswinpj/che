@@ -177,7 +177,7 @@ public class WorkspaceServiceTest {
                      "&attribute=custom:custom:value" +
                      "&start-after-create=true");
 
-        verify(wsManager).startWorkspace(workspace.getId(), null, null);
+        verify(wsManager).startWorkspace(workspace.getId(), null, null, false);
         verify(wsManager).createWorkspace(anyObject(),
                                           anyString(),
                                           eq(ImmutableMap.of("stackId", "stack123",
@@ -302,7 +302,7 @@ public class WorkspaceServiceTest {
     @Test
     public void shouldStartWorkspace() throws Exception {
         final WorkspaceImpl workspace = createWorkspace(createConfigDto());
-        when(wsManager.startWorkspace(any(), any(), any())).thenReturn(workspace);
+        when(wsManager.startWorkspace(any(), any(), any(), false)).thenReturn(workspace);
         when(wsManager.getWorkspace(workspace.getId())).thenReturn(workspace);
 
         final Response response = given().auth()
@@ -313,7 +313,7 @@ public class WorkspaceServiceTest {
 
         assertEquals(response.getStatusCode(), 200);
         assertEquals(new WorkspaceImpl(unwrapDto(response, WorkspaceDto.class)), workspace);
-        verify(wsManager).startWorkspace(workspace.getId(), workspace.getConfig().getDefaultEnv(), null);
+        verify(wsManager).startWorkspace(workspace.getId(), workspace.getConfig().getDefaultEnv(), null, false);
         verify(wsManager, never()).recoverWorkspace(workspace.getId(), workspace.getConfig().getDefaultEnv(), null);
     }
 
